@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+	<!-- VELOCITY_CONTROL -->
+	<node name="ackermann_velocity_control" pkg="ackermann_robust_control" type="vel_control.py" output="screen" />
+	<rosparam command="load" file="$(find ackermann_robust_control)/config/config.yaml" />
+
+	<node name="ackermann_orientation_control" pkg="ackermann_robust_control" type="orientation_control.py" output="screen" />
+
+</launch>

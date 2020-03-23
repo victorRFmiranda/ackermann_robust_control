@@ -1,0 +1,42 @@
+# ackermann parameters
+ ackermann_control:
+
+  # Select platform to run
+  # 1 - Simulator
+  # 2 - Robot
+  platform: 1
+
+
+  # Frequency in Hz for publish Torque
+  torque_frequency: 10.0
+  steer_angle_frequency: 10.0
+
+
+  # Controller Parameters
+  controller:
+    vel_k: 10
+    vel_c1: 5
+    vel_c2: 5
+    vel_Ts: 0.02
+    vel_etol: 0.01
+    orie_k: 5.0
+    orie_c1: 4.0
+    orie_c2: 4.0
+    orie_Ts: 0.01
+    orie_etol: 0.1
+
+
+  # Dynamics parameters
+  dynamics:
+    mass: 50.0
+    gravity: 9.81
+    drag: 0.3279
+    wheel_radio: 0.08
+    motor_efficiency: 0.95
+    friction_coef: 1.2
+    inertial_coef: 0.03898
+    cr: 150
+    cf: 150
+    lf: 0.3
+    lr: 0.3
+    inertia_z: 0.04211
