@@ -42,9 +42,9 @@ class simulator:
 
 
 		rospy.init_node('velocity_control_sim', anonymous=True)
-		rospy.Subscriber("sim_ros_interface/odom", Odometry, self.callback_velocity)
+		rospy.Subscriber("/odom", Odometry, self.callback_velocity)
 		rospy.Subscriber("cmd_vel", Twist, self.callback_reference)
-		self.pub_torque = rospy.Publisher('sim_ros_interface/cmd_torque', Wrench, queue_size=1)
+		self.pub_torque = rospy.Publisher('/cmd_torque', Wrench, queue_size=1)
 
 
 	def callback_velocity(self, data):
@@ -59,7 +59,7 @@ class simulator:
 		while not rospy.is_shutdown():
 			self.torque.torque.x = self.controlador.update(self.vel_ref,self.velocity)
 			self.pub_torque.publish(self.torque)
-			print("Velocity CMD: ",self.torque.torque.x)
+			#print("Velocity CMD: ",self.torque.torque.x)
 			rate.sleep()
 
 

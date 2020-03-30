@@ -45,9 +45,9 @@ class simulator:
 
 
 		rospy.init_node('orientation_control_sim', anonymous=True)
-		rospy.Subscriber("sim_ros_interface/odom", Odometry, self.callback_odom)
+		rospy.Subscriber("/odom", Odometry, self.callback_odom)
 		rospy.Subscriber("yaw_angle", Float32, self.callback_reference)
-		self.pub_angle = rospy.Publisher('sim_ros_interface/cmd_steer', Float32, queue_size=1)
+		self.pub_angle = rospy.Publisher('/cmd_steer', Float32, queue_size=1)
 
 
 	def callback_odom(self, data):
@@ -64,7 +64,7 @@ class simulator:
 			self.steer_angle.data = self.controlador.update(self.orientation_ref,self.linear_vel, self.orientation, self.orientation_vel)
 			self.pub_angle.publish(self.steer_angle)
 			#self.pub_angle.publish(0.0)
-			print("Orientation CMD: ", self.steer_angle.data, self.orientation_vel)
+			#print("Orientation CMD: ", self.steer_angle.data, self.orientation_ref - self.orientation)
 			rate.sleep()
 
 

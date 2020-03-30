@@ -37,10 +37,14 @@ class Orientation_control:
 ###### Update Control Law ##############
 	def update(self, ref, velocity, orientation, vel_ang):
 		error = ref - orientation
-		if (abs(error) < self.etol):
-			error = 0.0
+		# if (abs(error) < self.etol):
+		# 	error = 0.0
 
 		self.int_erro = self.int_erro + ((self.last_error + error)/2)*self.Ts
+		# if(self.int_erro > 1.0):
+		# 	self.int_erro = 1.0
+		# elif(self.int_erro< -1.0):
+		# 	self.int_erro = -1.0
 		self.last_error = error
 
 		alpha1 = ref - self.K*self.int_erro
@@ -57,12 +61,13 @@ class Orientation_control:
 		else:
 			un = d_alpha2 + (2.0/(self.Iz*velocity))*(self.Cf*self.lf*self.lf + self.Cr*self.lr*self.lr)*vel_ang - z1 - self.C2*z2
 
+
 		u = (self.Iz/(2.0*self.lf*self.Cf))*un
 
-		if (u > 0.5):
-			u = 0.5
-		elif (u < -0.5):
-			u = -0.5
+		# if (u > 0.5):
+		# 	u = 0.5
+		# elif (u < -0.5):
+		# 	u = -0.5
 
 		return u
 

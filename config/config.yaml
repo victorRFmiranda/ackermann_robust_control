@@ -1,6 +1,9 @@
 # ackermann parameters
  ackermann_control:
 
+  # Trajectory TXT in config foulder
+  file: "traj.txt"
+
   # Select platform to run
   # 1 - Simulator
   # 2 - Robot
@@ -18,11 +21,11 @@
     vel_c1: 5
     vel_c2: 5
     vel_Ts: 0.02
-    vel_etol: 0.01
-    orie_k: 5.0
-    orie_c1: 4.0
-    orie_c2: 4.0
-    orie_Ts: 0.01
+    vel_etol: 0.1
+    orie_k: 4.0
+    orie_c1: 3.0
+    orie_c2: 3.0
+    orie_Ts: 0.001
     orie_etol: 0.1
 
 
