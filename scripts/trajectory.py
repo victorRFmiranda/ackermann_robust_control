@@ -17,6 +17,7 @@ class trajectory:
 	def __init__(self, file_name):
 		rospack = rospkg.RosPack()
 		self.orientation_pos = []
+		self.velocity = []
 		self.file = open(rospack.get_path('ackermann_robust_control')+"/config/"+file_name, "r")
 		rospy.init_node('trajectory', anonymous=True)
 		self.pub_orientation = rospy.Publisher("yaw_angle", Float32, queue_size = 1)
@@ -25,20 +26,32 @@ class trajectory:
 
 
 	def read(self):
-		for x in self.file.read().split('\n'):
-			self.orientation_pos.append(x)
+		aux = []
+		for x in self.file.read().split():
+			aux.append(x)
+
+		for i in range(1,len(aux),2):
+			self.velocity.append(aux[i])
+
+		for i in range(2,len(aux),2):
+			self.orientation_pos.append(aux[i])
 
 	def run(self):
-		rate = rospy.Rate(10)
+		rate = rospy.Rate(11)
 		count = 0
 		vel = Twist()
-		vel.linear.x = 1.0
+		vel.linear.x = 1.25
 		#print(self.orientation_pos)
-		while not rospy.is_shutdown() and count <= len(self.orientation_pos):
+		while not rospy.is_shutdown() and count < len(self.orientation_pos):
 			self.pub_orientation.publish(float(self.orientation_pos[count]))
+			vel.linear.x = float(self.velocity[count])
 			self.pub_vel.publish(vel)
 			count = count + 1
+			print("Velocity: %f \t Orientation: %f \n" % (float(self.velocity[count]),float(self.orientation_pos[count])))
 			rate.sleep()
+
+		vel.linear.x = 0.0
+		self.pub_vel.publish(vel)
 
 
 

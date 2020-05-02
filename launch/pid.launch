@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+	<!-- ROBOT EKF -->
+	<include file="$(find robot_pose_ekf)/example_with_gps.launch" />
+
+	<!-- VELOCITY_CONTROL -->
+	<node name="ackermann_velocity_control" pkg="ackermann_robust_control" type="pid_control.py" output="screen" />
+		<rosparam command="load" file="$(find ackermann_robust_control)/config/config.yaml" />
+
+	<!-- ORIENTATION_CONTROL -->
+	<node name="ackermann_orientation_control" pkg="ackermann_robust_control" type="pid_orientation.py" output="screen" />
+
+	<!-- Save Results -->
+	<node name="save_data" pkg="ackermann_robust_control" type="save_data.py" output="screen"/>
+
+</launch>

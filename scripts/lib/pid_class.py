@@ -8,13 +8,13 @@ class PID:
         self.Ki = I
         self.Kd = D
         self.Ts = Tz
-        self.Integrator_min = -2.0 
-        self.Integrator_max = 2.0
+        self.Integrator_min = -20.0 
+        self.Integrator_max = 20.0
         self.Derivator = 0.0
         self.Integrator = 0.0
 
-	self.alpha = 0.55
-	self.control = 0.0
+    	self.alpha = 0.6
+    	self.control = 0.0
 
         self.set_point = 0.0
         self.error = 0.0
@@ -35,19 +35,49 @@ class PID:
         ### Integral #######
         self.Integrator = self.Integrator + ((self.errorant + self.error)/2)*self.Ts
         #### saturacao integrador
-        if self.Integrator > self.Integrator_max:
-            self.Integrator = self.Integrator_max
-        elif self.Integrator < self.Integrator_min:
-            self.Integrator = self.Integrator_min
+        # if self.Integrator > self.Integrator_max:
+        #     self.Integrator = self.Integrator_max
+        # elif self.Integrator < self.Integrator_min:
+        #     self.Integrator = self.Integrator_min
         self.errorant = self.error
         self.integral = self.Integrator * self.Ki
 
         PID = self.proportional + self.integral + self.derivative
-	#Control_signal = self.proportional + self.integral + self.derivative	
-	
-	# Filter	
-	self.control = (1-self.alpha)*self.control + self.alpha*PID
+        #Control_signal = self.proportional + self.integral + self.derivative	
+
+        # Filter	
+        self.control = (1-self.alpha)*self.control + self.alpha*PID
 		
+
+        return self.control
+
+    def update_with_error(self, error):
+        self.error = error
+        
+        if (abs(self.error) < self.errortolerance):
+            self.error = 0
+        
+        ### Proporcional ###
+        self.proportional = self.Kp * self.error
+        ### Derivativo #####
+        self.derivative = self.Kd * (self.error - self.Derivator)/self.Ts
+        self.Derivator = self.error  #erro anterior
+        ### Integral #######
+        self.Integrator = self.Integrator + ((self.errorant + self.error)/2)*self.Ts
+        #### saturacao integrador
+        # if self.Integrator > self.Integrator_max:
+        #     self.Integrator = self.Integrator_max
+        # elif self.Integrator < self.Integrator_min:
+        #     self.Integrator = self.Integrator_min
+        self.errorant = self.error
+        self.integral = self.Integrator * self.Ki
+
+        PID = self.proportional + self.integral + self.derivative
+        #Control_signal = self.proportional + self.integral + self.derivative   
+
+        # Filter    
+        self.control = (1-self.alpha)*self.control + self.alpha*PID
+        
 
         return self.control
     
@@ -60,4 +90,3 @@ class PID:
 ####### Retornar o Derivador #####
     def getDerivator(self):
         return self.Derivator
-        
