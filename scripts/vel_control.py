@@ -7,7 +7,7 @@ from lib.backstepping_class import Vel_control
 # messages
 from geometry_msgs.msg import Twist, Wrench
 from nav_msgs.msg import Odometry
-
+ 
 
 ## Class running on robot
 class robot:
@@ -59,7 +59,7 @@ class simulator:
 		while not rospy.is_shutdown():
 			self.torque.torque.x = self.controlador.update(self.vel_ref,self.velocity)
 			self.pub_torque.publish(self.torque)
-			#print("Velocity CMD: ",self.torque.torque.x)
+			print("Torque CMD: ",self.torque.torque.x)
 			rate.sleep()
 
 

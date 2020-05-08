@@ -37,7 +37,7 @@ class trajectory:
 			self.orientation_pos.append(aux[i])
 
 	def run(self):
-		rate = rospy.Rate(11)
+		rate = rospy.Rate(18)
 		count = 0
 		vel = Twist()
 		vel.linear.x = 1.25

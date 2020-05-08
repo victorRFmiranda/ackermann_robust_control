@@ -3,13 +3,14 @@
 import rospy
 # library
 from lib.backstepping_class import Orientation_control
+import tf
 
 # messages
-from geometry_msgs.msg import Twist, Wrench
+from geometry_msgs.msg import Twist, Wrench, PoseWithCovarianceStamped
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Float32
 
-
+ 
 ## Class running on robot
 class robot:
 	def __init__(self):
@@ -46,14 +47,20 @@ class simulator:
 
 		rospy.init_node('orientation_control_sim', anonymous=True)
 		rospy.Subscriber("/odom", Odometry, self.callback_odom)
+		rospy.Subscriber("/robot_pose_ekf/odom_combined", PoseWithCovarianceStamped, self.EKF)
 		rospy.Subscriber("yaw_angle", Float32, self.callback_reference)
 		self.pub_angle = rospy.Publisher('/cmd_steer', Float32, queue_size=1)
 
 
+
+	def EKF(self, data):
+		(r, p, y) = tf.transformations.euler_from_quaternion([data.pose.pose.orientation.x, data.pose.pose.orientation.y, data.pose.pose.orientation.z, data.pose.pose.orientation.w])
+		self.orientation = y
+
 	def callback_odom(self, data):
 		self.linear_vel = data.twist.twist.linear.x
 		self.orientation_vel = data.twist.twist.angular.z
-		self.orientation = data.pose.pose.orientation.z
+		# self.orientation = data.pose.pose.orientation.z
 
 	def callback_reference(self, data):
 		self.orientation_ref = data.data
@@ -63,7 +70,7 @@ class simulator:
 		while not rospy.is_shutdown():
 			self.steer_angle.data = self.controlador.update(self.orientation_ref,self.linear_vel, self.orientation, self.orientation_vel)
 			#self.steer_angle.data = self.controlador.update_ori_vel(self.orientation_ref,self.linear_vel, self.orientation_vel)
-			print(self.steer_angle)
+			#print(self.steer_angle)
 			self.pub_angle.publish(self.steer_angle)
 			#self.pub_angle.publish(0.0)
 			#print("Orientation CMD: ", self.steer_angle.data, self.orientation_ref - self.orientation)

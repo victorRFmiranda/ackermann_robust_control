@@ -48,8 +48,8 @@ class simulator:
 
 
 		rospy.init_node('orientation_PID_control_sim', anonymous=True)
-		rospy.Subscriber("/robot_pose_ekf/odom_combined", PoseWithCovarianceStamped, self.EKF)
-		# rospy.Subscriber("/imu_data", Imu, self.callback_odom)
+		#rospy.Subscriber("/robot_pose_ekf/odom_combined", PoseWithCovarianceStamped, self.EKF)
+		rospy.Subscriber("/imu_data", Imu, self.callback_odom)
 		rospy.Subscriber("yaw_angle", Float32, self.callback_reference)
 		self.pub_angle = rospy.Publisher('/cmd_steer', Float32, queue_size=1)
 
@@ -64,6 +64,8 @@ class simulator:
 	def EKF(self, data):
 		(r, p, y) = tf.transformations.euler_from_quaternion([data.pose.pose.orientation.x, data.pose.pose.orientation.y, data.pose.pose.orientation.z, data.pose.pose.orientation.w])
 		self.orientation = y
+
+		print(self.orientation)
 
 		#print(y)
 
@@ -81,7 +83,8 @@ class simulator:
 
 		self.orientation = y
 
-		#print(self.orientation)
+		print(self.orientation)
+
 		#self.orientation = data.pose.pose.orientation.z
 
 

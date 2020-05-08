@@ -46,7 +46,8 @@ class PID:
         #Control_signal = self.proportional + self.integral + self.derivative	
 
         # Filter	
-        self.control = (1-self.alpha)*self.control + self.alpha*PID
+        #self.control = (1-self.alpha)*self.control + self.alpha*PID
+        self.control = PID
 		
 
         return self.control

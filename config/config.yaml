@@ -2,7 +2,7 @@
  ackermann_control:
 
   # Trajectory TXT in config foulder
-  file: "traj.txt"
+  file: "traj_farm.txt"
 
   # Select platform to run
   # 1 - Simulator
@@ -11,7 +11,7 @@
 
 
   # Frequency in Hz for publish Torque
-  torque_frequency: 10.0
+  torque_frequency: 20.0
   steer_angle_frequency: 10.0
 
 
@@ -22,21 +22,21 @@
     vel_c2: 5
     vel_Ts: 0.02
     vel_etol: 0.1
-    orie_k: 6.0
-    orie_c1: 4.0
-    orie_c2: 4.0
-    orie_Ts: 0.002
-    orie_etol: 0.1
+    orie_k: 15.0
+    orie_c1: 8.0
+    orie_c2: 8.0
+    orie_Ts: 0.005
+    orie_etol: 0.05
 
   # PID Controller Parameters
   pid_controller:
-    kp: 20.7 #14.7
-    ki: 17 #6.3
-    kd: 3.1 #5.1
+    kp: 50 #20.7 #14.7
+    ki: 40 #17 #6.3
+    kd: 0 #3.1 #5.1
     ts: 0.02
-    etol: 0.01
+    etol: 0.1
     ori_kp: 2.5
-    ori_ki: 2.0
+    ori_ki: 3.0
     ori_kd: 0.5
     ori_ts: 0.02
     ori_etol: 0.05

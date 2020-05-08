@@ -66,7 +66,7 @@ class simulator:
 			self.torque.torque.x = self.controlador.update(self.vel_ref,self.velocity)
 			# print(self.torque.torque.x)
 			self.pub_torque.publish(self.torque)
-			#print("Velocity CMD: ",self.torque.torque.x)
+			#print("Torque CMD: ",self.torque.torque.x)
 			rate.sleep()
 
 

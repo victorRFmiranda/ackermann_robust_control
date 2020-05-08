@@ -40,7 +40,7 @@ class trajectory:
 			pos = msg.transforms[0].transform.translation
 			ori = msg.transforms[0].transform.rotation
 			self.tf = msg.transforms[0]
-			print(pos)
+			#print(pos)
 			#self.file.write("%f\t%f\t%f\t%f\t%f\t%f\t%f\n" % (pos.x, pos.y, pos.z, ori.x, ori.y, ori.z, ori.w))
 
 	def ekf(self, msg):
