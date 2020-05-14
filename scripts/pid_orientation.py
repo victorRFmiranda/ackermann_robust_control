@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# Control of orientation for the ackermann robot
+# using a PID
 
 import time
 import threading, os

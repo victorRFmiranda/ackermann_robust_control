@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# Control of velocity for the ackermann robot
+# using Integral Backstepping
 
 import rospy
 # library

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# This code compute a trajectory online
+# and publish orientation and velocity for the controller
+
 
 import rospy
 import rospkg

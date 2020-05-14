@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# This code read a .txt file with data of velocity and orientation
+# This data is a trajectory
+
 
 import rospy
 import rospkg

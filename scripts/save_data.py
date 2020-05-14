@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# This code save data from ROS topics to .txt files
 
 import rospy
 
