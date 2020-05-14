@@ -4,14 +4,18 @@ Considering a nonlinear Ackermann model: uncertainties addressed are ground fric
 
 
 ### Compiling
+1. Install the EKF package Robot Pose EKF
+```
+$ sudo apt-get install ros-$ROS_DISTRO-robot-pose-ekf -y
+```
 
-1. Clone this repository in your ROS worspace
+2. Clone this repository in your ROS worspace
 ```
 $ cd ~/catkin_ws/src
 $ git clone https://github.com/victorRFmiranda/ackermann_robust_control
 ```
 
-2. Compile
+3. Compile
 ```
 $ catkin build or catkin_make
 ```
@@ -48,7 +52,7 @@ $ roslaunch ackermann_robust_control pid.launch
 $ roslaunch ackermann_robust_control backstepping.launch
 ```
 
-Now, some topics will appear. The trajectory must publish the velocity and orientation in the topcis `/cmd_vel` and `/yaw_angle`.
+Now, some topics will appear. The trajectory must publish the velocity and orientation in the topcis `/cmd_vel` and `/yaw_angle`. The information topics are `\odom` and `/robot_pose_ekf/odom_combined`.
 
 If you have a .txt file with orientation and velocity date of a trajectory, it's possible to use the trajectory code:
 ```
