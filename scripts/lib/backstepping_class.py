@@ -24,6 +24,7 @@ class Orientation_control:
 		self.int_erro = 0.0
 		self.last_error = 0.0
 		self.last_alpha2 = 0.0
+		self.last_alpha1 = 0.0
 
 
         #### Parameters
@@ -36,7 +37,7 @@ class Orientation_control:
 
 ###### Update Control Law ##############
 	def update(self, ref, velocity, orientation, vel_ang):
-		error = ref - orientation
+		error = math.sin(ref - orientation)
 		if (abs(error) < self.etol):
 			error = 0.0
 
@@ -48,7 +49,8 @@ class Orientation_control:
 		self.last_error = error
 
 		alpha1 = ref + self.K*self.int_erro
-		z1 = orientation - alpha1
+		#z1 = orientation - alpha1
+		z1 = math.sin(orientation - ref) - self.K*self.int_erro
 		self.d_setpoint = derivative(self.Ts, self.last_setpoint, ref)
 		self.last_setpoint = ref
 		alpha2 = self.d_setpoint - self.K*z1 - self.int_erro*self.K*self.K + self.int_erro - self.C1*z1
@@ -56,7 +58,7 @@ class Orientation_control:
 		d_alpha2 = derivative(self.Ts, self.last_alpha2, alpha2)
 		self.last_alpha2 = alpha2
 
-		if (abs(velocity) < 0.4):
+		if (abs(velocity) < 0.2):
 			un = 0.0
 		else:
 			un = d_alpha2 + (2.0/(self.Iz*velocity))*(self.Cf*self.lf*self.lf + self.Cr*self.lr*self.lr)*vel_ang - z1 - self.C2*z2

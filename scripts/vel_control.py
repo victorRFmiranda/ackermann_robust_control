@@ -61,7 +61,7 @@ class simulator:
 		while not rospy.is_shutdown():
 			self.torque.torque.x = self.controlador.update(self.vel_ref,self.velocity)
 			self.pub_torque.publish(self.torque)
-			print("Torque CMD: ",self.torque.torque.x)
+			#print("Torque CMD: ",self.torque.torque.x)
 			rate.sleep()
 
 

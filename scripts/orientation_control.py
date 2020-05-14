@@ -73,7 +73,7 @@ class simulator:
 		while not rospy.is_shutdown():
 			self.steer_angle.data = self.controlador.update(self.orientation_ref,self.linear_vel, self.orientation, self.orientation_vel)
 			#self.steer_angle.data = self.controlador.update_ori_vel(self.orientation_ref,self.linear_vel, self.orientation_vel)
-			#print(self.steer_angle)
+			print(self.steer_angle)
 			self.pub_angle.publish(self.steer_angle)
 			#self.pub_angle.publish(0.0)
 			#print("Orientation CMD: ", self.steer_angle.data, self.orientation_ref - self.orientation)
