@@ -2,6 +2,7 @@
 # This code save data from ROS topics to .txt files
 
 import rospy
+import rospkg
 
 # messages
 from geometry_msgs.msg import Twist, Wrench, PoseWithCovarianceStamped, TransformStamped
@@ -15,8 +16,10 @@ import tf2_ros
 
 
 class trajectory:
-	def __init__(self, file_name):
-		self.file = open(file_name, "w+")
+	def __init__(self):
+		rospack = rospkg.RosPack()
+		f_name = rospack.get_path('ackermann_robust_control')+"/results/"+'results.txt'
+		self.file = open(f_name, "w+")
 		rospy.init_node('save_imu', anonymous=True)
 		#self.file.write("o.w\to.x\to.y\to.z\ta.x\ta.y\ta.z\tl.x\tl.y\tl.z\n")
 		# rospy.Subscriber("/imu_data", Imu, self.imu)
@@ -71,8 +74,7 @@ class trajectory:
 
 if __name__ == '__main__':
 	try:
-		f_name = '/home/victor/results.txt'
-		r = trajectory(f_name)
+		r = trajectory()
 		r.run()
 		r.file.close()
 		#r.run()
