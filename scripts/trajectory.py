@@ -9,7 +9,7 @@ import rospkg
 from lib.backstepping_class import Orientation_control
 
 # messages
-from geometry_msgs.msg import Twist, Wrench
+from geometry_msgs.msg import Twist, Wrench, QuaternionStamped, TwistStamped
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Float32
 
@@ -19,12 +19,14 @@ from std_msgs.msg import Float32
 class trajectory:
 	def __init__(self, file_name):
 		rospack = rospkg.RosPack()
+		self.vehicle_number = rospy.get_param('vehicle_number')
 		self.orientation_pos = []
 		self.velocity = []
+		self.angle = QuaternionStamped()
 		self.file = open(rospack.get_path('ackermann_robust_control')+"/config/"+file_name, "r")
 		rospy.init_node('trajectory', anonymous=True)
-		self.pub_orientation = rospy.Publisher("yaw_angle", Float32, queue_size = 1)
-		self.pub_vel = rospy.Publisher("cmd_vel", Twist, queue_size = 1)
+		self.pub_orientation = rospy.Publisher("/yaw_angle", QuaternionStamped, queue_size = 1)
+		self.pub_vel = rospy.Publisher("/cmd_vel", TwistStamped, queue_size = 1)
 
 
 
@@ -42,12 +44,18 @@ class trajectory:
 	def run(self):
 		rate = rospy.Rate(18)
 		count = 0
-		vel = Twist()
-		vel.linear.x = 1.25
+		vel = TwistStamped()
+		# vel.linear.x = 1.25
 		#print(self.orientation_pos)
 		while not rospy.is_shutdown() and count < len(self.orientation_pos):
-			self.pub_orientation.publish(float(self.orientation_pos[count]))
-			vel.linear.x = float(self.velocity[count])
+			self.angle.header.stamp = rospy.get_rostime()
+			self.angle.header.frame_id = ("vehicle_")+str(self.vehicle_number)
+			self.angle.quaternion.z = float(self.orientation_pos[count])
+			self.pub_orientation.publish(self.angle)
+
+			vel.header.stamp = rospy.get_rostime()
+			vel.header.frame_id = ("vehicle_")+str(self.vehicle_number)
+			vel.twist.linear.x = float(self.velocity[count])
 			self.pub_vel.publish(vel)
 			count = count + 1
 			print("Velocity: %f \t Orientation: %f \n" % (float(self.velocity[count]),float(self.orientation_pos[count])))

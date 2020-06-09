@@ -2,16 +2,28 @@
 <launch>
 
 	<!-- ROBOT EKF -->
-	<include file="$(find robot_pose_ekf)/example_with_gps.launch" />
-
+	<!--include file="$(find robot_pose_ekf)/example_with_gps.launch" /-->
+	<arg name="number" default="master" />
+	<!--node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf" output="screen">
+	  <param name="output_frame" value="odom"/>
+	  <param name="freq" value="30.0"/>
+	  <param name="debug" value="true"/>
+	  <param name="sensor_timeout" value="1.0"/>  
+	  <param name="odom_used" value="true"/>
+	  <param name="imu_used" value="true"/>
+	  <param name="vo_used" value="false"/>
+	  <param name="gps_used" value="true"/>
+	</node-->
+		
 	<!-- VELOCITY_CONTROL -->
-	<node name="ackermann_velocity_control" pkg="ackermann_robust_control" type="pid_control.py" output="screen" />
+	<node name="ackermann_velocity_control_$(arg number)" pkg="ackermann_robust_control" type="pid_control.py" output="screen" args="$(arg number)" />
+		<!-- <param name="vehicle_number" value="$(arg number)"/> -->
 		<rosparam command="load" file="$(find ackermann_robust_control)/config/config.yaml" />
 
 	<!-- ORIENTATION_CONTROL -->
-	<node name="ackermann_orientation_control" pkg="ackermann_robust_control" type="pid_orientation.py" output="screen" />
+	<node name="ackermann_orientation_control_$(arg number)" pkg="ackermann_robust_control" type="pid_orientation.py" output="screen" args="$(arg number)" />
 
 	<!-- Save Results -->
-	<node name="save_data" pkg="ackermann_robust_control" type="save_data.py" output="screen"/>
+	<!--node name="save_data" pkg="ackermann_robust_control_$(arg number)" type="save_data.py" output="screen"/-->
 
 </launch>

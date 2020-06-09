@@ -2,6 +2,7 @@
 # Control of orientation for the ackermann robot
 # using a PID
 
+import sys
 import time
 import threading, os
 import numpy as np
@@ -10,7 +11,7 @@ from lib.pid_class import PID
 import tf
 
 # messages
-from geometry_msgs.msg import Twist, Wrench, Point, PoseWithCovarianceStamped
+from geometry_msgs.msg import Twist, WrenchStamped, PoseWithCovarianceStamped, TwistStamped, QuaternionStamped
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Float32
 from sensor_msgs.msg import Imu
@@ -35,11 +36,12 @@ class robot:
 
 ## Class running on simulator
 class simulator:
-	def __init__(self):
+	def __init__(self, number):
+		# self.vehicle_number = rospy.get_param('vehicle_number')
+		self.vehicle_number = number
 		self.orientation = 0.0
 		self.orientation_ref = 0.0
-		self.steer_angle = Float32()
-		self.position = Point()
+		self.steer_angle = QuaternionStamped()
 		self.velocity = 0.0
 		KP = rospy.get_param('ackermann_control/pid_controller/ori_kp')
 		KI = rospy.get_param('ackermann_control/pid_controller/ori_ki')
@@ -49,11 +51,11 @@ class simulator:
 		self.controlador = PID(KP,KI,KD,TS,ETOL)
 
 
-		rospy.init_node('orientation_PID_control_sim', anonymous=True)
+		rospy.init_node('orientation_PID_control_sim_'+str(self.vehicle_number), anonymous=True)
 		#rospy.Subscriber("/robot_pose_ekf/odom_combined", PoseWithCovarianceStamped, self.EKF)
-		rospy.Subscriber("/imu_data", Imu, self.callback_odom)
-		rospy.Subscriber("yaw_angle", Float32, self.callback_reference)
-		self.pub_angle = rospy.Publisher('/cmd_steer', Float32, queue_size=1)
+		rospy.Subscriber("/imu_data", Imu, self.callback_imu)
+		rospy.Subscriber("/yaw_angle", QuaternionStamped, self.callback_reference)
+		self.pub_angle = rospy.Publisher('/cmd_steer', QuaternionStamped, queue_size=1)
 
 
 	def fix(self, number):
@@ -64,49 +66,31 @@ class simulator:
 
 
 	def EKF(self, data):
-		(r, p, y) = tf.transformations.euler_from_quaternion([data.pose.pose.orientation.x, data.pose.pose.orientation.y, data.pose.pose.orientation.z, data.pose.pose.orientation.w])
-		self.orientation = y
-
-		print(self.orientation)
-
-		#print(y)
+		if (data.header.frame_id == (("vehicle_")+str(self.vehicle_number))):
+			(r, p, y) = tf.transformations.euler_from_quaternion([data.pose.pose.orientation.x, data.pose.pose.orientation.y, data.pose.pose.orientation.z, data.pose.pose.orientation.w])
+			self.orientation = y
 
 
-	def callback_odom(self, data):
-		(r, p, y) = tf.transformations.euler_from_quaternion([data.orientation.x, data.orientation.y, data.orientation.z, data.orientation.w])
-		
-		#angle = y * 180.0/np.pi
 
-		#angle = angle % 360.0
-
-		#radians = angle * np.pi/180.0
-			
-		#self.orientation = radians 
-
-		self.orientation = y
-
-		print(self.orientation)
-
-		#self.orientation = data.pose.pose.orientation.z
+	def callback_imu(self, data):
+		if (data.header.frame_id == (("imu_link_")+str(self.vehicle_number))):
+			(r, p, y) = tf.transformations.euler_from_quaternion([data.orientation.x, data.orientation.y, data.orientation.z, data.orientation.w])	
+			self.orientation = y
 
 
 	def callback_reference(self, data):
-		self.orientation_ref = data.data
+		if (data.header.frame_id == (("vehicle_")+str(self.vehicle_number))):
+			self.orientation_ref = data.quaternion.z
 
 
 	def run(self):
 		rate = rospy.Rate(rospy.get_param('ackermann_control/steer_angle_frequency'))
 		while not rospy.is_shutdown():
-			### Controlador SOF
-			#error = self.orientation_ref - self.orientation
-			#self.steer_angle.data = 2.5370 * error * np.sign(self.velocity)
-
-			### Controlador PID
-			#self.steer_angle.data = self.controlador.update(self.orientation_ref,self.orientation)
-
 			### PID sin error
 			error = np.sin(self.orientation_ref - self.orientation)
-			self.steer_angle.data = self.controlador.update_with_error(error)
+			self.steer_angle.header.stamp = rospy.get_rostime()
+			self.steer_angle.header.frame_id = ("vehicle_")+str(self.vehicle_number)
+			self.steer_angle.quaternion.z = self.controlador.update_with_error(error)
 
 			self.pub_angle.publish(self.steer_angle)
 			rate.sleep()
@@ -118,7 +102,7 @@ if __name__ == '__main__':
 	try:
 		platform = rospy.get_param('ackermann_control/platform')
 		if (platform == 1):
-			node = simulator()
+			node = simulator(sys.argv[1])
 			node.run()
 		else:
 			node = robot()
