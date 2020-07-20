@@ -38,7 +38,7 @@ class trajectory:
 		
 
 	def TF(self, msg):
-		if (msg.transforms[0].child_frame_id != "base_footprint"):
+		if (msg.transforms[0].child_frame_id != "base_footprintmaster"):
 			return
 		else:
 			pos = msg.transforms[0].transform.translation

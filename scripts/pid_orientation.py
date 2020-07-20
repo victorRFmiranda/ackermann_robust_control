@@ -43,6 +43,8 @@ class simulator:
 		self.orientation_ref = 0.0
 		self.steer_angle = QuaternionStamped()
 		self.velocity = 0.0
+		self.orientation_vel = 0.0
+		self.linear_vel = 0.0
 		KP = rospy.get_param('ackermann_control/pid_controller/ori_kp')
 		KI = rospy.get_param('ackermann_control/pid_controller/ori_ki')
 		KD = rospy.get_param('ackermann_control/pid_controller/ori_kd')
@@ -52,24 +54,18 @@ class simulator:
 
 
 		rospy.init_node('orientation_PID_control_sim_'+str(self.vehicle_number), anonymous=True)
-		#rospy.Subscriber("/robot_pose_ekf/odom_combined", PoseWithCovarianceStamped, self.EKF)
+		rospy.Subscriber("/odom", Odometry, self.callback_velocity)
 		rospy.Subscriber("/imu_data", Imu, self.callback_imu)
 		rospy.Subscriber("/yaw_angle", QuaternionStamped, self.callback_reference)
+		#rospy.Subscriber("/cmd_vel", TwistStamped, self.callback_reference)
+		#rospy.Subscriber("/cmd_vel", Twist, self.callback_reference)
 		self.pub_angle = rospy.Publisher('/cmd_steer', QuaternionStamped, queue_size=1)
 
 
-	def fix(self, number):
-		if number >= 0:
-			return np.floor(number)
-		else:
-			return np.ceil(number)
-
-
-	def EKF(self, data):
+	def callback_velocity(self, data):
 		if (data.header.frame_id == (("vehicle_")+str(self.vehicle_number))):
-			(r, p, y) = tf.transformations.euler_from_quaternion([data.pose.pose.orientation.x, data.pose.pose.orientation.y, data.pose.pose.orientation.z, data.pose.pose.orientation.w])
-			self.orientation = y
-
+			self.linear_vel = data.twist.twist.linear.x
+			self.orientation_vel = data.twist.twist.angular.z
 
 
 	def callback_imu(self, data):
@@ -80,7 +76,9 @@ class simulator:
 
 	def callback_reference(self, data):
 		if (data.header.frame_id == (("vehicle_")+str(self.vehicle_number))):
+			#self.orientation_ref = data.twist.angular.z
 			self.orientation_ref = data.quaternion.z
+		#self.orientation_ref = data.angular.z
 
 
 	def run(self):
@@ -88,10 +86,12 @@ class simulator:
 		while not rospy.is_shutdown():
 			### PID sin error
 			error = np.sin(self.orientation_ref - self.orientation)
+			#error = np.sin(self.orientation_ref - self.orientation_vel)
+			#error = np.sin(self.orientation_vel - self.orientation_ref)
 			self.steer_angle.header.stamp = rospy.get_rostime()
 			self.steer_angle.header.frame_id = ("vehicle_")+str(self.vehicle_number)
 			self.steer_angle.quaternion.z = self.controlador.update_with_error(error)
-
+			print("Orientation: %.4f" % self.orientation)
 			self.pub_angle.publish(self.steer_angle)
 			rate.sleep()
 

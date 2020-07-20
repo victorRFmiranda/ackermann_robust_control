@@ -51,6 +51,7 @@ class simulator:
 		rospy.Subscriber("/odom", Odometry, self.callback_velocity)
 		# rospy.Subscriber("/robot_pose_ekf/odom_combined", PoseWithCovarianceStamped, self.EKF)
 		rospy.Subscriber("/cmd_vel", TwistStamped, self.callback_reference)
+		#rospy.Subscriber("/cmd_vel", Twist, self.callback_reference)
 		self.pub_torque = rospy.Publisher('/cmd_torque', WrenchStamped, queue_size=1)
 
 
@@ -66,6 +67,7 @@ class simulator:
 	def callback_reference(self, data):
 		if (data.header.frame_id == (("vehicle_")+str(self.vehicle_number))):
 			self.vel_ref = data.twist.linear.x
+		#self.vel_ref = data.linear.x
 
 
 	def run(self):
@@ -75,7 +77,7 @@ class simulator:
 			self.torque.header.frame_id = ("vehicle_")+str(self.vehicle_number)
 			self.torque.wrench.torque.x = self.controlador.update(self.vel_ref,self.velocity)
 			self.pub_torque.publish(self.torque)
-			print(self.torque.wrench.torque.x)
+			# print(self.torque.wrench.torque.x)
 			rate.sleep()
 
 
@@ -85,6 +87,7 @@ if __name__ == '__main__':
 	try:
 		platform = rospy.get_param('ackermann_control/platform')
 		if (platform == 1):
+			print("\33[92mVehicle Number:\t %s \33[0m" % sys.argv[1])
 			node = simulator(sys.argv[1])
 			node.run()
 		else:

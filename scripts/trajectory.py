@@ -19,7 +19,7 @@ from std_msgs.msg import Float32
 class trajectory:
 	def __init__(self, file_name):
 		rospack = rospkg.RosPack()
-		self.vehicle_number = rospy.get_param('vehicle_number')
+		self.vehicle_number = 'master'
 		self.orientation_pos = []
 		self.velocity = []
 		self.angle = QuaternionStamped()
@@ -42,12 +42,13 @@ class trajectory:
 			self.orientation_pos.append(aux[i])
 
 	def run(self):
-		rate = rospy.Rate(18)
+		rate = rospy.Rate(20)
 		count = 0
+		cont = 0
 		vel = TwistStamped()
 		# vel.linear.x = 1.25
 		#print(self.orientation_pos)
-		while not rospy.is_shutdown() and count < len(self.orientation_pos):
+		while not rospy.is_shutdown() and cont < 1*len(self.orientation_pos):
 			self.angle.header.stamp = rospy.get_rostime()
 			self.angle.header.frame_id = ("vehicle_")+str(self.vehicle_number)
 			self.angle.quaternion.z = float(self.orientation_pos[count])
@@ -58,10 +59,14 @@ class trajectory:
 			vel.twist.linear.x = float(self.velocity[count])
 			self.pub_vel.publish(vel)
 			count = count + 1
+			cont = cont + 1
+			if (count >= len(self.orientation_pos)):
+				count = 0
+			#print("Count: %d \t Cont: %d" % (count, cont))
 			print("Velocity: %f \t Orientation: %f \n" % (float(self.velocity[count]),float(self.orientation_pos[count])))
 			rate.sleep()
 
-		vel.linear.x = 0.0
+		vel.twist.linear.x = 0.0
 		self.pub_vel.publish(vel)
 
 

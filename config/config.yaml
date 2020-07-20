@@ -2,7 +2,7 @@
  ackermann_control:
 
   # Trajectory TXT in config foulder
-  file: "traj_farm.txt"
+  file: "traj_parking.txt"
 
   # Select platform to run
   # 1 - Simulator
@@ -34,10 +34,10 @@
     ki: 40 #17 #6.3
     kd: 0 #3.1 #5.1
     ts: 0.02
-    etol: 0.1
-    ori_kp: 2.5
-    ori_ki: 3.0
-    ori_kd: 0.5
+    etol: 0.05
+    ori_kp: 17
+    ori_ki: 14
+    ori_kd: 5
     ori_ts: 0.02
     ori_etol: 0.05
 
