@@ -49,10 +49,10 @@ class simulator:
 
 		rospy.init_node('velocity_PID_control_sim_'+str(self.vehicle_number), anonymous=True)
 		rospy.Subscriber("/odom", Odometry, self.callback_velocity)
-		# rospy.Subscriber("/robot_pose_ekf/odom_combined", PoseWithCovarianceStamped, self.EKF)
-		rospy.Subscriber("/cmd_vel", TwistStamped, self.callback_reference)
+		# rospy.Subscriber("/cmd_vel", TwistStamped, self.callback_reference)
+		rospy.Subscriber("/cmd_vel_"+str(self.vehicle_number), TwistStamped, self.callback_reference)
 		#rospy.Subscriber("/cmd_vel", Twist, self.callback_reference)
-		self.pub_torque = rospy.Publisher('/cmd_torque', WrenchStamped, queue_size=1)
+		self.pub_torque = rospy.Publisher('/cmd_torque_'+str(self.vehicle_number), WrenchStamped, queue_size=1)
 
 
 
