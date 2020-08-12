@@ -3,7 +3,7 @@
 
 
 	<!-- ROBOT EKF -->
-	<include file="$(find robot_pose_ekf)/example_with_gps.launch" />
+	<!--include file="$(find robot_pose_ekf)/example_with_gps.launch" /-->
 
 	<!-- VELOCITY_CONTROL -->
 	<node name="ackermann_velocity_control" pkg="ackermann_robust_control" type="vel_control.py" output="screen" />

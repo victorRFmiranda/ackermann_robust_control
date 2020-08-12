@@ -34,10 +34,10 @@
     ki: 40 #17 #6.3
     kd: 0 #3.1 #5.1
     ts: 0.02
-    etol: 0.05
-    ori_kp: 17
-    ori_ki: 14
-    ori_kd: 5
+    etol: 0.01
+    ori_kp: 20 #17
+    ori_ki: 18 #14
+    ori_kd: 3 #5
     ori_ts: 0.02
     ori_etol: 0.05
 
