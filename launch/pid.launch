@@ -24,6 +24,6 @@
 	<node name="ackermann_orientation_control_$(arg number)" pkg="ackermann_robust_control" type="pid_orientation.py" output="screen" args="$(arg number)" />
 
 	<!-- Save Results -->
-	<node name="save_data" pkg="ackermann_robust_control" type="save_data.py" output="screen"/>
+	<!--node name="save_data" pkg="ackermann_robust_control" type="save_data.py" output="screen"/-->
 
 </launch>

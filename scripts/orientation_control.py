@@ -2,7 +2,7 @@
 # Control of orientation for the ackermann robot
 # using Integral Backstepping
 
-
+import sys
 import rospy
 # library
 from lib.backstepping_class import Orientation_control
@@ -12,6 +12,7 @@ import tf
 from geometry_msgs.msg import Twist, WrenchStamped, PoseWithCovarianceStamped, TwistStamped, QuaternionStamped
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Float32
+from sensor_msgs.msg import Imu
 
  
 ## Class running on robot
@@ -67,7 +68,7 @@ class simulator:
 			self.orientation_vel = data.twist.twist.angular.z
 
 	def callback_reference(self, data):
-		sif (data.header.frame_id == (("vehicle_")+str(self.vehicle_number))):
+		if (data.header.frame_id == (("vehicle_")+str(self.vehicle_number))):
 			self.orientation_ref = data.quaternion.z
 
 	def run(self):

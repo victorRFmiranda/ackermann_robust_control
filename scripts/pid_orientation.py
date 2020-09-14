@@ -91,7 +91,8 @@ class simulator:
 			self.steer_angle.header.stamp = rospy.get_rostime()
 			self.steer_angle.header.frame_id = ("vehicle_")+str(self.vehicle_number)
 			self.steer_angle.quaternion.z = self.controlador.update_with_error(error)
-			#print("Orientation: %.4f" % self.orientation)
+			print("Error: %.4f\n" % error)
+			print("Orientation: %.4f" % self.steer_angle.quaternion.z)
 			self.pub_angle.publish(self.steer_angle)
 			rate.sleep()
 
