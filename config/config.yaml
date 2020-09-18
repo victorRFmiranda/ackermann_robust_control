@@ -17,9 +17,9 @@
 
   # Backstepping Controller Parameters
   controller:
-    vel_k: 10
-    vel_c1: 5
-    vel_c2: 5
+    vel_k: 7
+    vel_c1: 2
+    vel_c2: 2
     vel_Ts: 0.02
     vel_etol: 0.1
     orie_k: 12 #12

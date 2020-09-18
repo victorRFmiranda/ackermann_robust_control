@@ -53,8 +53,8 @@ class simulator:
 		rospy.init_node('orientation_control_sim', anonymous=True)
 		rospy.Subscriber("/odom", Odometry, self.callback_odom)
 		rospy.Subscriber("/imu_data", Imu, self.callback_imu)
-		rospy.Subscriber("yaw_angle", QuaternionStamped, self.callback_reference)
-		self.pub_angle = rospy.Publisher('/cmd_steer', QuaternionStamped, queue_size=1)
+		rospy.Subscriber("/yaw_angle", QuaternionStamped, self.callback_reference)
+		self.pub_angle = rospy.Publisher('/cmd_steer_'+str(self.vehicle_number), QuaternionStamped, queue_size=1)
 
 
 	def callback_imu(self, data):
