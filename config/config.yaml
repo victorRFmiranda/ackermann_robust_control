@@ -12,19 +12,19 @@
 
   # Frequency in Hz for publish Torque
   torque_frequency: 20.0
-  steer_angle_frequency: 10.0
+  steer_angle_frequency: 20.0
 
 
   # Backstepping Controller Parameters
   controller:
-    vel_k: 7
-    vel_c1: 2
-    vel_c2: 2
+    vel_k: 10
+    vel_c1: 5
+    vel_c2: 5
     vel_Ts: 0.02
     vel_etol: 0.1
     orie_k: 12 #12
-    orie_c1: 5 #3
-    orie_c2: 5 #3
+    orie_c1: 3 #3
+    orie_c2: 3 #3
     orie_Ts: 0.02
     orie_etol: 0.05
 
@@ -35,10 +35,10 @@
     kd: 0 #3.1 #5.1
     ts: 0.02
     etol: 0.01
-    ori_kp: 20  #20 #40
-    ori_ki: 18  #18 #0
-    ori_kd: 3  #3 #10
-    ori_ts: 0.05
+    ori_kp: 1  #20 #40
+    ori_ki: 1  #18 #0
+    ori_kd: 0  #3 #10
+    ori_ts: 0.02
     ori_etol: 0.05
 
 

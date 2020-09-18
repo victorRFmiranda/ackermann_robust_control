@@ -76,7 +76,7 @@ class simulator:
 		while not rospy.is_shutdown():
 			self.steer_angle.header.stamp = rospy.get_rostime()
 			self.steer_angle.header.frame_id = ("vehicle_")+str(self.vehicle_number)
-			self.steer_angle.quaternion.z = self.controlador.update(self.orientation_ref,self.linear_vel, self.orientation, self.orientation_vel)
+			self.steer_angle.quaternion.z = 0.6*self.steer_angle.quaternion.z + 0.4*self.controlador.update(self.orientation_ref,self.linear_vel, self.orientation, self.orientation_vel)
 
 			self.pub_angle.publish(self.steer_angle)
 			rate.sleep()

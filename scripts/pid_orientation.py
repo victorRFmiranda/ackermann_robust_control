@@ -59,7 +59,7 @@ class simulator:
 		rospy.Subscriber("/yaw_angle", QuaternionStamped, self.callback_reference)
 		#rospy.Subscriber("/cmd_vel", TwistStamped, self.callback_reference)
 		#rospy.Subscriber("/cmd_vel", Twist, self.callback_reference)
-		self.pub_angle = rospy.Publisher('/cmd_steer', QuaternionStamped, queue_size=1)
+		self.pub_angle = rospy.Publisher('/cmd_steer_'+str(self.vehicle_number), QuaternionStamped, queue_size=1)
 
 
 	def callback_velocity(self, data):
@@ -90,9 +90,10 @@ class simulator:
 			#error = np.sin(self.orientation_vel - self.orientation_ref)
 			self.steer_angle.header.stamp = rospy.get_rostime()
 			self.steer_angle.header.frame_id = ("vehicle_")+str(self.vehicle_number)
-			self.steer_angle.quaternion.z = self.controlador.update_with_error(error)
+			self.steer_angle.quaternion.z = 0.0*self.steer_angle.quaternion.z + 1*self.controlador.update_with_error(error)
 			print("Error: %.4f\n" % error)
-			print("Orientation: %.4f" % self.steer_angle.quaternion.z)
+			print("orientation: %.4f" % self.orientation)
+			print("Steer: %.4f" % self.steer_angle.quaternion.z)
 			self.pub_angle.publish(self.steer_angle)
 			rate.sleep()
 
